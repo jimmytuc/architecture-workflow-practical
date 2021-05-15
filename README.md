@@ -1,7 +1,3 @@
-# INTRODUCTION
-
-For answering the questions test.
-
 ## Why Serverless?
 
 - Costs saving
