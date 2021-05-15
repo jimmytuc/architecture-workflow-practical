@@ -2,58 +2,77 @@
 
 **Table of Contents**
 
-**System Overview**
+**[System Overview](#system-overview)**
 
-- Service Overview
-- Contributing Applications, Daemons, and Services
-- Architecture Designs
-- Resilience, Fault Tolerance and High-Availability
-- Throttling and Partial Shutdown
-- Required Resources
-- Expected Traffic and Load
-  - Hot or Peak Periods
-  - Warm Periods
-  - Cool or Quiet Periods
-- Environmental Differences
-- Tools
+- [Run Book / Operations Manual](#run-book--operations-manual)
+- [System overview](#system-overview)
+  - [Contributing applications, daemons and proposed-services](#contributing-applications-daemons-and-proposed-services)
+  - [Architecture design:](#architecture-design)
+  - [Resilience, Fault Tolerance and High-Availability](#resilience-fault-tolerance-and-high-availability)
+    - [Database clustered (RDS)](#database-clustered-rds)
+  - [Throttling and Partial Shutdown](#throttling-and-partial-shutdown)
+  - [Required resources](#required-resources)
+  - [Expected Traffic and Load](#expected-traffic-and-load)
+    - [Hot or Peak Periods](#hot-or-peak-periods)
+    - [Warm Periods](#warm-periods)
+    - [Cool or Quiet Periods](#cool-or-quiet-periods)
+  - [Environmental Differences](#environmental-differences)
+  - [Tools and Libraries](#tools-and-libraries)
+- [Security and Access Control](#security-and-access-control)
+- [System Configuration Management](#system-configuration-management)
+- [Monitoring and Alerting](#monitoring-and-alerting)
+  - [CloudWatch](#cloudwatch)
+  - [CloudWatch Alarm](#cloudwatch-alarm)
+    - [Alarm States](#alarm-states)
+  - [SNS, SES Composing](#sns-ses-composing)
+- [Operational Tasks](#operational-tasks)
+  - [Deployments](#deployments)
+  - [Routine Checks](#routine-checks)
+  - [Troubleshooting](#troubleshooting)
+- [Maintenance Tasks](#maintenance-tasks)
+  - [Maintenance Procedures](#maintenance-procedures)
+    - [Patching](#patching)
+    - [Technical Testing](#technical-testing)
+    - [Post-Deployment](#post-deployment)
+- [Failure and Recovery Procedures troubleshooting](#failure-and-recovery-procedures-troubleshooting)
+  - [Failover](#failover)
+  - [Recovery](#recovery)
+- [Contact Details](#contact-details)
 
-**Security and Access Control**
+**[Security and Access Control](#security-and-access-control)**
 
-**System Configuration**
+**[System Configuration Management](#system-configuration-management)**
 
-**System Configuration Management**
+**[Monitoring and Alerting](#monitoring-and-alerting)**
 
-**Monitoring and Alerting**
+- [CloudWatch](#cloudwatch)
+- [CloudWatch Alarm](#cloudwatch-alarm)
+- [SNS, SES Composing](#sns-ses-composing)
 
-- CloudWatch
-- CloudWatch Alarm
-- SNS, SES Composing
+**[Operational Tasks](#operational-tasks)**
 
-**Operational Tasks**
+- [Deployments](#deployments)
+- [Routine Checks](#routine-checks)
+- [Troubleshooting](#troubleshooting)
 
-- Deployment
-- Routine Checks
-- Troubleshooting
+**[Maintenance Tasks](#maintenance-tasks)**
 
-**Maintenance Tasks**
-
-- Maintenance Procedures
-  - Patching
+- [Maintenance Procedures](#maintenance-procedures)
+  - [Patching](#patching)
     - Normal Cycle
     - Zero-Day Vulnerabilities
   - GMT/BST time changes
   - Cleardown Activities
-    - Log Rotation
-- Testing
-  - Technical Testing
-  - Post-Deployment
+  - Log Rotation
+  - [Technical Testing](#technical-testing)
+  - [Post-Deployment](#post-deployment)
 
-**Failure and Recovery Procedures troubleshooting**
+**[Failure and Recovery Procedures troubleshooting](#failure-and-recovery-procedures-troubleshooting)**
 
-- Failover
-- Recovery
+- [Failover](#failover)
+- [Recovery](#recovery)
 
-**Contact Details**
+**[Contact Details](#contact-details)**
 
 This runbook assumes that we are using Amazon Web Services (AWS) as our platform of choice.
 
@@ -77,12 +96,6 @@ Xalt is considering to support these subjects:
 
 ![](assets/20210515_175725_Xalt_Diagram_Workflow_With_CICD.jpg)
 
-### Redundancy design
-
-#### Multi-region design
-
-#### Cluster design
-
 ## Resilience, Fault Tolerance and High-Availability
 
 As we are using AWS platform, according to their **serverless for high availability**: https://docs.aws.amazon.com/whitepapers/latest/fault-tolerant-components/using-serverless-architectures-for-high-availability.html
@@ -90,6 +103,15 @@ As we are using AWS platform, according to their **serverless for high availabil
 > Serverless provides built-in availability and fault tolerance. You don't need to architect for these capabilities since the services running the application provide them by default.
 
 > Central to many serverless designs is AWS Lambda. AWS Lambda automatically runs your code on highly available, fault-tolerant infrastructure spread across multiple Availability Zones in a single region without requiring you to provision or manage servers
+
+### Database clustered (RDS)
+
+Following the high availability principle, we can use AWS RDS multiple-AZ deployments.
+In case of an infrastructure failure, AWS RDS performs an automatic failover to the standby DB instance. Since the endpoint for your DB instance remains the same after a failover, the application can resume database operation without the need for manual administrative intervention.
+
+Example for our serverless architecture with AWS RDS multiple availability zones:
+
+![](assets/20210515_231728_Xalt_Diagram_multi_az_rds_clustered.jpg)
 
 ## Throttling and Partial Shutdown
 
@@ -119,14 +141,14 @@ AWS Lambda functions can be grouped by 2 mains environment area: staging (aka `s
 
 Besides that we might also need to have the development `dev` environment for sample, experimental deployment and test.
 
-## Tools / SDK
+## Tools and Libraries
 
 - AWS SAM
 - AWS SAM CLI
 - AWS CLI
 - AWS SDK
 - Docker CLI
-- ECR
+- CloudFormation
 
 # Security and Access Control
 
@@ -181,10 +203,12 @@ There are 2 options of choices:
 
 - Gitlab CI/CD pipeline integration workflow.
 
-  ![](assets/20210515_175725_Xalt_Diagram_Workflow_With_CICD.jpg)
-- Make use of AWSCodeCommit, AWSCodePipeline, AWSCodeBuild and AWSCodeDeploy workflow.
+  ![](assets/20210515_231912_Xalt_Diagram_CI_CD.jpg)
+- Make use of AWSCodeCommit, AWSCodePipeline, AWSCodeBuild and AWSCodeDeploy workflow on. Example for combining with **multiple-VPCs**:
 
   ![](assets/20210515_175840_Xalt_Diagram_Workflow_With_CICD_Alternative_Way.jpg)
+
+  The similiar architecture with **multi AWS accounts**, this is recommend to have a different Amazon Account for production environment.
 
 ## Routine Checks
 
@@ -202,14 +226,21 @@ There are 2 options of choices:
 
 ## Maintenance Procedures
 
-- Patching: Discover and fix the lambda function, database server, third-party APIs call integration asap. Test first: patching to dev/stg environment first to verify the issue.
+#### Patching
+
+Discover and fix the lambda function, database server, third-party APIs call integration asap. Test first: patching to dev/stg environment first to verify the issue.
+
 - Normal Cycle
 - Zero-Day Vulnerabilities
   - GMT/BST time changes
   - Cleardown Activities
     - Log Rotation
-- Technical Testing
-- Post-Deployment: cleanup redundant resources consuming.
+
+#### Technical Testing
+
+#### Post-Deployment
+
+Cleanup redundant resources consuming.
 
 # Failure and Recovery Procedures troubleshooting
 
@@ -217,7 +248,9 @@ Reliability best practices on using AWS Lambda
 
 ## Failover
 
-- Multiple regions architecture designs
+- Multiple regions, mutiple availability zones architecture designs. For example, multi-regions:
+
+  ![](assets/20210515_232601_Xalt_Diagram_multi_regionals.jpg)
 
 ## Recovery
 
@@ -229,3 +262,5 @@ Reliability best practices on using AWS Lambda
 - IT support team
 - Devops team
 - Manager
+
+*Note*: This run book is inherited from the following runbook template: https://github.com/SkeltonThatcher/run-book-template/blob/master/run-book-template.md
