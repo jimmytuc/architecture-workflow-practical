@@ -1,5 +1,3 @@
-For answering the questions test.
-
 ## Why Serverless?
 
 - Costs saving
@@ -12,7 +10,7 @@ For answering the questions test.
 
 ### Why AWS Lambda
 
-- Tools like provisioned concurrency (https://aws.amazon.com/about-aws/whats-new/2019/12/aws-lambda-announces-provisioned-concurrency/#:~:text=We%20are%20announcing%20Provisioned%20Concurrency,serverless%20applications%20at%20any%20scale.&text=Customers%20only%20pay%20for%20the,time%20that%20it%20is%20configured.) and AWS SAM provide a layer of configuration and complexity management that greatly eases the challenge of working with a serverless application, at no additional cost.
+- Tools like provisioned concurrency and AWS SAM provide a layer of configuration and complexity management that greatly eases the challenge of working with a serverless application, at no additional cost.
 - And, is my favorite platform
 - SAM (Serverless Application Model) templates and Lambda Layers to support deploy and write code in serverless framework
 
@@ -41,10 +39,11 @@ Terraform - because of its simple - clean syntax and a lot of supported built-in
 While NewRelic and Datadog is costly (Datadog is the most expensive in my opinion), it seems like CloudWatch is the good fit because we are using AWS platform as elaborate above.
 
 The benefits:
-- If we use AWS platform then CloudWatch would be the best choice, because of its providing most reliable, scalable and flexible way to monitor our resource or application on cloud.
-- Cloudwatch supporting 2 monitoring modes: basic and detailed monitoring.
-- We can also manage resource utilization of your servers.
+If we use AWS platform then CloudWatch would be the best choice, because of its providing most reliable, scalable and flexible way to monitor our resource or application on cloud.
+Cloudwatch is supporting 2 monitoring modes: basic and detailed monitoring.
+We can also manage resource utilization of your servers.
 Besides that:
+
 - Custom our own metrics monitoring way
 - Make use of alarm on resources ultilization
 - It has supported to stream the logs to other platforms (ex Datadog) via an agency
