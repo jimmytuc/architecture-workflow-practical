@@ -2,7 +2,7 @@
 
 **Table of Contents**
 
-**[link](#system-overview)System Overview**
+**[System Overview](#system-overview)**
 
 - Service Overview
 - Contributing Applications, Daemons, and Services
