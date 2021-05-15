@@ -16,7 +16,7 @@
 
 # Architecture overview
 
-![](assets/20210515_180553_Xalt_Diagram_Workflow_With_CICD.jpg)
+![](assets/20210515_233151_Xalt_Diagram_CI_CD.jpg)
 
 # CI/CD pipelines
 
