@@ -5,7 +5,7 @@
 **[System Overview](#system-overview)**
 
 - [Contributing applications, daemons and proposed-services](#contributing-applications-daemons-and-proposed-services)
-- [Architecture Designs](#architecture-designs)
+- [Architecture design](#architecture-design)
 - [Resilience, Fault Tolerance and High-Availability](#resilience-fault-tolerance-and-high-availability)
 - [Throttling and Partial Shutdown](#throttling-and-partial-shutdown)
 - [Required Resources](#required-resources)
@@ -14,15 +14,13 @@
   - [Warm Periods](#warm-periods)
   - [Cool or Quiet Periods](#cool-or-quiet-periods)
 - [Environmental Differences](#environmental-differences)
-- [Tools](#tools)
+- [Tools and Libraries](#tools-and-libraries)
 
-**[Security and Access Control](security-and-access-control)**
-
-**[System Configuration](system-configuration)**
+**[Security and Access Control](#security-and-access-control)**
 
 **[System Configuration Management](#system-configuration-management)**
 
-**[Monitoring and Alerting](monitoring-and-alerting)**
+**[Monitoring and Alerting](#monitoring-and-alerting)**
 
 - [CloudWatch](#cloudwatch)
 - [CloudWatch Alarm](#cloudwatch-alarm)
@@ -30,7 +28,7 @@
 
 **[Operational Tasks](#operational-tasks)**
 
-- [Deployment](#deployment)
+- [Deployments](#deployments)
 - [Routine Checks](#routine-checks)
 - [Troubleshooting](#troubleshooting)
 
@@ -43,9 +41,8 @@
   - GMT/BST time changes
   - Cleardown Activities
   - Log Rotation
-  - Testing
-  - Technical Testing
-  - Post-Deployment
+  - [Technical Testing](#technical-testing)
+  - [Post-Deployment](#post-deployment)
 
 **[Failure and Recovery Procedures troubleshooting](#failure-and-recovery-procedures-troubleshooting)**
 
@@ -75,12 +72,6 @@ Xalt is considering to support these subjects:
 ## Architecture design:
 
 ![](assets/20210515_175725_Xalt_Diagram_Workflow_With_CICD.jpg)
-
-### Redundancy design
-
-#### Multi-region design
-
-#### Cluster design
 
 ## Resilience, Fault Tolerance and High-Availability
 
@@ -118,7 +109,7 @@ AWS Lambda functions can be grouped by 2 mains environment area: staging (aka `s
 
 Besides that we might also need to have the development `dev` environment for sample, experimental deployment and test.
 
-## Tools / SDK
+## Tools and Libraries
 
 - AWS SAM
 - AWS SAM CLI
@@ -201,14 +192,16 @@ There are 2 options of choices:
 
 ## Maintenance Procedures
 
-- Patching: Discover and fix the lambda function, database server, third-party APIs call integration asap. Test first: patching to dev/stg environment first to verify the issue.
+#### Patching
+Discover and fix the lambda function, database server, third-party APIs call integration asap. Test first: patching to dev/stg environment first to verify the issue.
 - Normal Cycle
 - Zero-Day Vulnerabilities
   - GMT/BST time changes
   - Cleardown Activities
     - Log Rotation
-- Technical Testing
-- Post-Deployment: cleanup redundant resources consuming.
+#### Technical Testing
+#### Post-Deployment
+Cleanup redundant resources consuming.
 
 # Failure and Recovery Procedures troubleshooting
 
